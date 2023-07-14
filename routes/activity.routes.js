@@ -36,6 +36,7 @@ router.get("/activities", isAuthenticated, (req, res, next) => {
 
   ActivityModel.find()
     .populate({path: "owner", select: "-password"})
+    // .populate("room")
     .then(response => res.json(response))
     .catch(e => {
       console.log("failed to get the activities", e);
