@@ -10,7 +10,11 @@ const roomSchema = new Schema(
     activities: [{
       type: Schema.Types.ObjectId,
       ref: "Activity"
-    }]
+    }],
+    roomOwner: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
   },
   {
     timestamps: true

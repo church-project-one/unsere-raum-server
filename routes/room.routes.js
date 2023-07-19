@@ -5,7 +5,7 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 router.post("/rooms", isAuthenticated, (req, res, next) => {
     const {title, description} = req.body;
-    const newRoom = {title: title, description: description};
+    const newRoom = {title: title, description: description, roomOwner: req.payload._id};
 
     RoomModel.create(newRoom)
       .then(response => res.json(response))
@@ -18,9 +18,10 @@ router.post("/rooms", isAuthenticated, (req, res, next) => {
       });
 });
 
-router.get("/rooms", (req, res, next) => {
+router.get("/rooms", isAuthenticated, (req, res, next) => {
   RoomModel.find()
     .populate({path: "activities", select: "-password"})
+    .populate({path: "roomOwner", select: "-password"})
     .then(response => res.json(response))
     .catch(e => {
       console.log("failed to fetch the rooms", e);
