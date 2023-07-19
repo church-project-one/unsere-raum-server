@@ -35,6 +35,7 @@ router.get("/rooms/:id", isAuthenticated, (req, res, next) => {
   const {id} = req.params;
 
   RoomModel.findById(id)
+    .populate({path: "activities", select: "-password" })
     .then(response => res.json(response))
     .catch(e => {
       console.log("failed to find the room's id", e);

@@ -3,40 +3,55 @@ const { mongoose } = require("mongoose");
 const ActivityModel = require("../models/Activity.model");
 const RoomModel = require("../models/Room.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
+const { response } = require("express");
 
 
-router.post("/activities", isAuthenticated, (req, res, next) => {
-  const { roomId, date, hour, activity, leader } = req.body;
+router.post("/rooms/:id/activities", isAuthenticated, (req, res, next) => {
+  const {id} = req.params
+  const { date, hour, activity, leader, roomId } = req.body;
 
-  const newActivity = {
-    roomId: roomId,
-    date: date,
-    hour: hour,
-    activity: activity,
-    leader: leader,
-    owner: req.payload._id
-  }
+  RoomModel.findById(id)
+    .populate("activities")
+    .then(theRoom => {
 
-  ActivityModel.create(newActivity)
-    .then(activity => {
-      console.log(activity, "tell me this data");
-      return RoomModel.findByIdAndUpdate(roomId, {$push: {activities: activity._id}}, {returnDocument: 'after'});
+      console.log(theRoom, "tell me this room")
+
+      const newActivity = {
+        roomId: roomId,
+        date: date,
+        hour: hour,
+        activity: activity,
+        leader: leader,
+        owner: req.payload._id
+      }
+
+      ActivityModel.create(newActivity)
+        .then(activity => {
+          return RoomModel.findByIdAndUpdate(roomId, {$push: {activities: activity._id}}, {returnDocument: 'after'});
+        })
+        .then(response => res.json(response))
+        .catch(e => {
+          console.error("failed to post the new activity", e);
+          res.status(500).json({
+            message: "failed to post the new activity",
+            error: e
+          });
+        });
     })
-    .then(response => res.json(response))
     .catch(e => {
-      console.error("failed to post the new activity", e);
+      console.log("failed to find the room's id", e);
       res.status(500).json({
-        message: "failed to post the new activity",
+        message: "failed to the find the room's id",
         error: e
-      });
+      })
     });
 });
 
 router.get("/activities", isAuthenticated, (req, res, next) => {
-
+  
   ActivityModel.find()
     .populate({path: "owner", select: "-password"})
-    // .populate("room")
+    .populate("room")
     .then(response => res.json(response))
     .catch(e => {
       console.log("failed to get the activities", e);
