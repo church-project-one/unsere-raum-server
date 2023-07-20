@@ -22,6 +22,7 @@ router.get("/rooms", isAuthenticated, (req, res, next) => {
   RoomModel.find()
     .populate({path: "activities", select: "-password"})
     .populate({path: "roomOwner", select: "-password"})
+    .populate("partners")
     .then(response => res.json(response))
     .catch(e => {
       console.log("failed to fetch the rooms", e);

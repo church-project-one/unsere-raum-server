@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { mongoose } = require("mongoose");
 const User = require("../models/User.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
+const RoomModel = require("../models/Room.model");
 
 router.get("/users", isAuthenticated, (req, res, next) => {
 

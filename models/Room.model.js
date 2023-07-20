@@ -14,7 +14,11 @@ const roomSchema = new Schema(
     roomOwner: {
       type: Schema.Types.ObjectId,
       ref: "User"
-    }
+    },
+    partners:[{
+      type: Schema.Types.ObjectId,
+      ref: "Partner"
+    }]
   },
   {
     timestamps: true
