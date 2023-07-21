@@ -16,10 +16,8 @@ router.post("/rooms/:roomId/partners", isAuthenticated, async (req, res, next) =
     };
     
     const addPartner = await PartnerModel.create(addNewPartner);
-    console.log(addPartner, "tell this result")
     const room = await RoomModel.findByIdAndUpdate(roomId, {$push: {partners: addPartner._id}}, {returnDocument: "after"}).populate("partners")
     res.json(room)
-    console.log(room, "tell me this result")
 
   } catch{e => {
     console.log("failed to add a new id to the room", e);

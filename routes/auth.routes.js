@@ -4,15 +4,18 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
+const fileUploader = require("../config/cloudinary.config");
 
 const saltRounds = 10;
 
-// POST /auth/signup  - Creates a new user in the database
-router.post("/signup", (req, res, next) => {
-  const { email, password, name } = req.body;
+router.post("/upload", fileUploader.single("picture"), (req, res, next) => {
+  res.json({picture: req.file.path})
+})
 
-  // Check if email or password or name are provided as empty strings
-  if (email === "" || password === "" || name === "") {
+router.post("/signup", (req, res, next) => {
+  const { email, password, name, street, number, postalCode, city, nationality, picture } = req.body;
+
+  if (email === "" || password === "" || name === "" || street === "" || number === "" || postalCode === "" || city === "" || nationality === "" || picture === "" ) {
     res.status(400).json({ message: "Provide email, password and name" });
     return;
   }
@@ -47,17 +50,22 @@ router.post("/signup", (req, res, next) => {
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
 
+      // let pictureUrl = "";
+      // if(req.file) {
+      //   pictureUrl = req.file.path
+      // }
+
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name });
+      return User.create({ email, password: hashedPassword, name, street, number, postalCode, city, nationality, picture});
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { email, name, _id } = createdUser;
-
+      const { email, name, _id, street, number, postalCode, city, nationality, picture } = createdUser;
+      console.log(createdUser)
       // Create a new object that doesn't expose the password
-      const user = { email, name, _id };
+      const user = { email, name, _id, street, number, postalCode, city, nationality, picture };
 
       // Send a json response containing the user object
       res.status(201).json({ user: user });
@@ -89,16 +97,16 @@ router.post("/login", (req, res, next) => {
 
       if (passwordCorrect) {
         // Deconstruct the user object to omit the password
-        const { _id, email, name } = foundUser;
+        const { _id, email, name, street, number, postalCode, city, nationality, picture } = foundUser;
 
         // Create an object that will be set as the token payload
-        const payload = { _id, email, name };
+        const payload = { _id, email, name, street, number, postalCode, city, nationality, picture };
 
         // Create a JSON Web Token and sign it
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
           algorithm: "HS256",
           expiresIn: "6h",
-        });
+        }); 
 
         // Send the token as the response
         res.status(200).json({ authToken: authToken });

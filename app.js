@@ -21,6 +21,8 @@ app.use("/api", require("./routes/activity.routes"));
 app.use("/api", require("./routes/room.routes"));
 app.use("/api", require("./routes/user.router"));
 app.use("/api", require("./routes/partner.routes"));
+app.use("/api", require("./routes/feed.routes"));
+app.use("/api", require("./routes/response.routes"));
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
