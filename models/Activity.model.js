@@ -6,21 +6,9 @@ const acitivitySchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Room"
     },
-    date: {
-      type: Date,
-      required: true
-    },
-    hour: {
-      type: String,
-      required: true
-    },
     activity: {
       type: String,
       required: true
-    },
-    leader: {
-      type: String,
-      require: true
     },
     owner: {
       type: Schema.Types.ObjectId,

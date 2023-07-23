@@ -5,10 +5,9 @@ const RoomModel = require("../models/Room.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 const { response } = require("express");
 
-
 router.post("/rooms/:id/activities", isAuthenticated, (req, res, next) => {
   const {id} = req.params
-  const { date, hour, activity, leader, roomId } = req.body;
+  const { activity, roomId } = req.body;
 
   RoomModel.findById(id)
     .populate("activities")
@@ -18,10 +17,7 @@ router.post("/rooms/:id/activities", isAuthenticated, (req, res, next) => {
 
       const newActivity = {
         roomId: roomId,
-        date: date,
-        hour: hour,
         activity: activity,
-        leader: leader,
         owner: req.payload._id
       }
 
@@ -81,10 +77,8 @@ router.put("/activities/:id", isAuthenticated, (req, res, next) => {
   const {id} = req.params;
 
   const updateActivity = {
-    date: req.body.date,
-    hour: req.body.hour,
+    roomId: req.body.roomId,
     activity: req.body.activity,
-    leader: req.body.leader,
   };
 
   ActivityModel.findByIdAndUpdate(id, updateActivity, {new: true})

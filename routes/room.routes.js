@@ -20,7 +20,7 @@ router.post("/rooms", isAuthenticated, (req, res, next) => {
 
 router.get("/rooms", isAuthenticated, (req, res, next) => {
   RoomModel.find()
-    .populate({path: "activities", select: "-password"})
+    .populate({path: "activities", populate:{path: "owner", select: "-password"}})
     .populate({path: "roomOwner", select: "-password"})
     .populate("partners")
     .then(response => res.json(response))

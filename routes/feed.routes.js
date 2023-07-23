@@ -12,6 +12,7 @@ router.post("/feeds", isAuthenticated, async (req, res, next) => {
   try {
     const newFeedBody = {
       picture: req.body.picture,
+      name: req.body.name,
       description: req.body.description,
       price: req.body.price,
       productAddress: {
@@ -37,15 +38,13 @@ router.post("/feeds", isAuthenticated, async (req, res, next) => {
     };
   };
 });
+  
 
-
-router.get("/feeds", isAuthenticated, async(req, res, next) => {
+router.get("/feeds", async(req, res, next) => {
   try {
     const findFeeds = await FeedModel.find().populate({path: "ownerFeed", select: "-password"}).populate({path: "ownerResponses", populate:{path: "ownerResponse", select: "-password"}});
     res.json(findFeeds);
     
-
-
   } catch{ e =>
     console.log("failed to post the feeds", e);
     res.status(500).json({
@@ -59,7 +58,8 @@ router.get("/feeds/:feedId", isAuthenticated, async(req, res, next) => {
   const {feedId} = req.params;
 
   try{
-    const findFeedId = await FeedModel.findById(feedId);
+    const findFeedId = await FeedModel.findById(feedId)
+    .populate({path: "ownerFeed", select: "-password"}).populate({path: "ownerResponses", populate:{path: "ownerResponse", select: "-password"}});
     res.json(findFeedId);
 
   } catch{ e => {
@@ -77,16 +77,17 @@ router.put("/feeds/:feedId", isAuthenticated, async (req, res, next) => {
   
   const getFeedBody = {
     picture: req.body.picture,
-      description: req.body.description,
-      price: req.body.price,
-      productAddress: {
-        street: req.body.productAddress.street,
-        number: req.body.productAddress.number,
-        postalcode: req.body.productAddress.postalcode,
-        city: req.body.productAddress.city,
-        country: req.body.productAddress.country
-      },
-      availability: req.body.availability
+    name: req.body.name,
+    description: req.body.description,
+    price: req.body.price,
+    productAddress: {
+      street: req.body.productAddress.street,
+      number: req.body.productAddress.number,
+      postalcode: req.body.productAddress.postalcode,
+      city: req.body.productAddress.city,
+      country: req.body.productAddress.country
+    },
+    availability: req.body.availability
   }
   
   try {

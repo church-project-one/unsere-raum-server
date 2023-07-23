@@ -6,6 +6,12 @@ const responseSchema = new Schema(
       type: String,
       required: true
     },
+    rating: {
+      type: Number,
+      max: 5,
+      required: true
+    },
+    picture: String,
     ownerResponse: {
       type: Schema.Types.ObjectId,
       ref: "User"

@@ -5,13 +5,15 @@ const feedSchema = new Schema(
     picture: {
       type: String
     },
+    name: {
+      type: String,
+    },
     description: {
       type: String,
       required: true
     },
     price: {
       type: Number,
-      required: true
     },
     productAddress: {
       street: String,
@@ -21,9 +23,7 @@ const feedSchema = new Schema(
       country: String
     },
     availability: {
-      type: String,
-      enum: ["Available", "Unavailable"],
-      required: true
+      type: String
     },
     ownerFeed: {
       type: Schema.Types.ObjectId,
