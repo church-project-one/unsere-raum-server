@@ -8,8 +8,7 @@ const responseSchema = new Schema(
     },
     rating: {
       type: Number,
-      max: 5,
-      required: true
+      // required: true
     },
     picture: String,
     ownerResponse: {

@@ -8,7 +8,7 @@ router.post("/upload", fileUploader.single("picture"), (req, res, next) => {
   res.json({picture: req.file.path})
 })
 
-router.post("/feeds", isAuthenticated, async (req, res, next) => {
+router.post("/feeds", async (req, res, next) => {
   try {
     const newFeedBody = {
       picture: req.body.picture,
@@ -54,7 +54,7 @@ router.get("/feeds", async(req, res, next) => {
   }
 });
 
-router.get("/feeds/:feedId", isAuthenticated, async(req, res, next) => {
+router.get("/feeds/:feedId", async(req, res, next) => {
   const {feedId} = req.params;
 
   try{
