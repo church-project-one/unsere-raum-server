@@ -5,12 +5,12 @@ const { mongoose, model } = require("mongoose");
 const partnerSchema = new Schema(
     {
       partner: {
-        type: String,
-        require: true
-      },
-      roomOwner: {
         type: Schema.Types.ObjectId,
         ref: "User"
+      },
+      roomFrom: {
+        type: Schema.Types.ObjectId,
+        ref: "Room"
       }
     },
     {

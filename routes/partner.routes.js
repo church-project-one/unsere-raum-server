@@ -4,7 +4,6 @@ const PartnerModel = require("../models/Partner.model");
 const RoomModel = require("../models/Room.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-
 router.post("/rooms/:roomId/partners", isAuthenticated, async (req, res, next) => {
   const {roomId} = req.params;
 
@@ -12,7 +11,7 @@ router.post("/rooms/:roomId/partners", isAuthenticated, async (req, res, next) =
     const findRoomId = await RoomModel.findById(roomId);
     const addNewPartner = {
       partner: req.body.partner,
-      roomId: req.body.roomId
+      roomFrom: req.body.roomFrom
     };
     
     const addPartner = await PartnerModel.create(addNewPartner);
@@ -28,7 +27,7 @@ router.post("/rooms/:roomId/partners", isAuthenticated, async (req, res, next) =
 
 router.get("/partners", isAuthenticated, async(req, res, next) => {
   try{
-    const fetchPartners = await PartnerModel.find().populate("roomOwner")
+    const fetchPartners = await PartnerModel.find().populate({path: "partner", select: "-password"}).populate("roomFrom")
     res.json(fetchPartners);
   } catch{e => {
     console.log("failed to add a new id to the room", e);
