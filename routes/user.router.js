@@ -19,8 +19,6 @@ router.get("/users", isAuthenticated, (req, res, next) => {
 router.get("/users/:userId", isAuthenticated, async (req, res, next) => {
   const {userId} = req.params;
 
-  console.log(userId)
-
   try {
     const findTheUserId = await User.findById(userId, {password: 0});
     res.json(findTheUserId);
@@ -34,5 +32,35 @@ router.get("/users/:userId", isAuthenticated, async (req, res, next) => {
     };
   };
 });
+
+router.put("/users/:userId", isAuthenticated, async (req, res, next) => {
+  const {userId} = req.params;
+
+  const userBody = {
+    name: req.body.name,
+    nationality: req.body.nationality,
+    street: req.body.street,
+    number: req.body.number,
+    postalCode: req.body.postalCode,
+    city: req.body.city
+  }
+
+  try {
+    const updateUserId = await User.findByIdAndUpdate(userId, userBody, {new: true, select: "-password"});
+    res.json(updateUserId);
+
+    console.log(updateUserId)
+
+  } catch { e => {
+    console.log("failed to update the profile user")
+    res.status(500).json({
+      message: "failed to update the profile id",
+      error: e
+    })
+  }
+
+  }
+
+})
 
 module.exports = router;
