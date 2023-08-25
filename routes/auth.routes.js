@@ -15,7 +15,7 @@ router.post("/upload", fileUploader.single("picture"), (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const { email, password, name, street, number, postalCode, city, nationality, picture } = req.body;
 
-  if (email === "" || password === "" || name === "" || street === "" || number === "" || postalCode === "" || city === "" || nationality === "" || picture === "" ) {
+  if (email === "" || password === "" || name === "" || street === "" || number === "" || postalCode === "" || city === "" || nationality === "") {
     res.status(400).json({ message: "Provide email, password and name" });
     return;
   }
