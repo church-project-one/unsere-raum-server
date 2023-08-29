@@ -35,6 +35,18 @@ router.get("/partners", isAuthenticated, async(req, res, next) => {
   }
 
   }
+});
+
+router.get("/partners/:partnerId", isAuthenticated, async(req, res, next) => {
+  const {partnerId} = req.params;
+  try {
+    const partnerIdData = await PartnerModel.findById(partnerId).populate({path: "partner", select: "-password"}).populate("roomFrom")
+    res.json(partnerIdData);
+  } catch { e => {
+      console.log("failed to fetch the partner Id")
+      res.status(500).json({message: "error to find the partner id", error: e})
+    }
+  }
 })
 
 router.put("/partners/:partnerId", isAuthenticated, async(req, res, next) => {

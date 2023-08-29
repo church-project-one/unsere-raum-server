@@ -16,7 +16,7 @@ router.post("/signup", (req, res, next) => {
   const { email, password, name, street, number, postalCode, city, nationality, picture } = req.body;
 
   if (email === "" || password === "" || name === "" || street === "" || number === "" || postalCode === "" || city === "" || nationality === "") {
-    res.status(400).json({ message: "Provide email, password and name" });
+    res.status(400).json({ message: "Please fill all the blank form" });
     return;
   }
 
