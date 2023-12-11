@@ -60,7 +60,7 @@ router.get("/activities", isAuthenticated, (req, res, next) => {
 
 router.get("/activities/:id", isAuthenticated, (req, res, next) => {
   const {id} = req.params
-
+  
   ActivityModel.findById(id)
     .populate({path: "owner", select: "-password"})
     .then(response => res.json(response))
