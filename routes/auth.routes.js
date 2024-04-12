@@ -12,7 +12,7 @@ router.post("/upload", fileUploader.single("picture"), (req, res, next) => {
   res.json({picture: req.file.path})
 })
 
-router.post("/signup", (req, res, next) => {
+router.post("/signup", fileUploader.single("picture"), (req, res, next) => {
   const { email, password, name, street, number, postalCode, city, nationality, picture } = req.body;
 
   if (email === "" || password === "" || name === "" || street === "" || number === "" || postalCode === "" || city === "" || nationality === "") {
@@ -50,14 +50,14 @@ router.post("/signup", (req, res, next) => {
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
 
-      // let pictureUrl = "";
-      // if(req.file) {
-      //   pictureUrl = req.file.path
-      // }
+      let pictureUrl = "";
+      if(req.file) {
+        pictureUrl = req.file.path
+      }
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name, street, number, postalCode, city, nationality, picture});
+      return User.create({ email, password: hashedPassword, name, street, number, postalCode, city, nationality, picture: pictureUrl});
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
